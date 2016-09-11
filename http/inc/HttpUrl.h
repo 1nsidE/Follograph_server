@@ -2,6 +2,8 @@
 #define HTTP_ARGUMENTS_H
 
 #include <map>
+#include <string>
+
 #include "Definitions.h"
 
 namespace Http{
