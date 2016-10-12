@@ -57,10 +57,10 @@ GnuTLS - https://www.gnutls.org
 Build Instructions:
 ----------------
 
-Linux:
+Linux and MacOSX:
 ----------------
 
-Tested only on Linux with 4.5 kernel.
+Tested on Linux with 4.5 kernel and MacOSX 10.11 with gcc and clang.
 
     cmake .
     make
@@ -70,12 +70,36 @@ You will find shared library with headers file divided into 2 folders in "lib" f
 Windows:
 ----------------
 
-Experimental Windows builds is supported. To build under Windows you need to provide path to the headers and .lib's of the dependencies (GnuTLS and JsonCpp).
+Experimental Windows builds is supported, tested with:
+* Visual Studio 2015 Update 2
+* GnuTLS 3.4.9 x64
+* jsoncpp 1.7.7 (d8cd848ede)
 
-Tested only with Visual Studio 2015.
+Detailed steps:
 
-    cmake -G "Visual Studio 14 [Win64]" . -DJSON_LIB_DIR=<PATH_TO_JSONCPP_LIB_FILE> -DJSON_INCLUDE_DIR=<PATH_TO_JSONCPP_HEADERS> -GNUTLS_LIB=<PATH_TO_GNUTLS_LIB_FILE> -DGNUTLS_INCLUDE=<PATH_TO_GNUTLS_HEADERS>
+1. Download GNUTLS from here: ftp://ftp.gnutls.org/gcrypt/gnutls/w32/
+   As of Oct2016, version 3.4.9 w64 is fine.
+2. Extract the content a directory, e.g. C:\Program Files\gnutls-3.4.9-w64
+3. generate .lib and .exp from .def file as explained here: https://wiki.inspircd.org/GnuTLS_SSL_Module_Under_Windows
+   e.g execute from a Developer Command Prompt for Visual Studio as Administrator:
+    
+   C:\Program Files\gnutls-3.4.9-w64\bin>lib /def:libgnutls-30.def /nologo /machine:x64
+      Creating library libgnutls-30.lib and object libgnutls-30.exp
 
-This will create Visual Studio project.
+4. Copy the .lib file from /bin/ to /lib/ and rename it to: gnutls.lib (removing the trailing '-30').
+5. compile the jsoncpp library from: https://github.com/open-source-parsers/jsoncpp
+   - Use CMake 3.3.0, click Configure button, then as generator select Visual Studio 14 2015 Win64, then click Generate. At this point you created the .sln files.
+   - Open the jsoncpp.sln file, Rebuild Solution. 
+   - Then install by building the INSTALL project (remember to run VS as Administrator). Now jsoncpp headers and binaries would be installed by 
+   default under C:/Program Files/jsoncpp/.
+
+6. Using CMake open the CMakeLists.txt file for InstagramCpp
+   - Click Configure, select the genration of project files for Visual Studio 14 2015 Win64.
+   - The configuration will fail, nevertheless two variables with no values appears.
+   - Set GNUTLS_USERPROVIDED_PATH to point to where GNUTls has been copied previously (e.g. C:/Program Files/gnutls-3.4.9-w64);
+   - Set JSONCPP_USERPROVIDED_PATH to point to where it has been installed (e.g. C:\Program Files\jsoncpp);
+   - Click configure again, it will succeed;
+   - Click Generate to create the project files;
+   - Open the instagramcpp.sln, build and enjoy.
 
 
