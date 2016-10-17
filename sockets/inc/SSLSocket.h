@@ -3,6 +3,10 @@
 
 #include <string>
 
+#if defined(WIN32) 
+typedef int ssize_t;//@@@@@@ where is this defined in VC?
+#endif
+
 #include <gnutls/gnutls.h>
 #include "TCPSocket.h"
 

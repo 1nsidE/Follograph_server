@@ -2,6 +2,7 @@
 #define HTTP_ARGUMENTS_H
 
 #include <map>
+#include <string>
 #include <memory>
 #include "Definitions.h"
 #include "Http.h"
